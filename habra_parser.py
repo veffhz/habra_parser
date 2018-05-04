@@ -14,7 +14,7 @@ def generate_new_url(page_num):
     return "{}/page{}".format(base_url, page_num)
 
 
-def download_raw_pages_content(pages_count=2):
+def download_raw_pages_content(pages_count):
     """download habr pages by page count"""
     return [fetch_raw_content(page) for page in range(1, pages_count + 1)]
 
@@ -22,9 +22,10 @@ def download_raw_pages_content(pages_count=2):
 def fetch_pages_count_from_args():
     """fetch pages count for habr urls"""
     parser = argparse.ArgumentParser()
-    parser.add_argument('-p', '--pages', help='Count pages to parse')
+    parser.add_argument('-p', '--pages', help='Count pages to parse', type=int)
     args = parser.parse_args()
-    return int(args.pages)
+    default_value = 1
+    return args.pages or default_value
 
 
 def fetch_raw_content(page):
