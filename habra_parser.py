@@ -1,11 +1,10 @@
-import re
+from bs4 import BeautifulSoup
+from helper import clean_word, group_by_weeks
 
 import requests
 import pymorphy2
 import dateparser
 import argparse
-
-from bs4 import BeautifulSoup
 
 
 def generate_new_url(page_num):
@@ -88,11 +87,6 @@ def collect_items(pages_content):
     return data
 
 
-def clean_word(word):
-    """cleat text of special characters"""
-    return re.sub('[^a-zа-я]+', '', word.lower())
-
-
 def filter_words_on_morphy(words):
     """get nouns from word list"""
     filtered = []
@@ -105,23 +99,17 @@ def filter_words_on_morphy(words):
     return filtered
 
 
-def group_by_weeks(data):
-    pass
-
-
 def print_result(data):
-    """print parse result"""
     for item in data:
         print("{} {}".format(item, data[item]))
 
 
 def main():
-    """main function"""
     pages_count = fetch_pages_count_from_args()
     pages_content = download_raw_pages_content(pages_count)
     data = collect_items(pages_content)
-    group_by_weeks(data)
-    print_result(data)
+    data_grouped_by_week = group_by_weeks(data)
+    print_result(data_grouped_by_week)
 
 
 if __name__ == "__main__":
