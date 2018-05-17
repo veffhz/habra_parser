@@ -1,10 +1,14 @@
-from bs4 import BeautifulSoup
-from helper import clean_word, group_by_weeks
+import re
 
 import requests
 import pymorphy2
 import dateparser
 import argparse
+
+from bs4 import BeautifulSoup
+from collections import OrderedDict
+from collections import Counter
+from datetime import timedelta
 
 
 def generate_new_url(page_num):
@@ -72,6 +76,23 @@ def process_page_content(page_content):
     return items
 
 
+def clean_word(word):
+    """cleat text of special characters"""
+    return re.sub('[^a-zа-я]+', '', word.lower())
+
+
+def group_by_weeks(data):
+    grouped = OrderedDict()
+    for item in data:
+        delta = timedelta(days=-item.weekday(), weeks=1)
+        monday = item + delta
+        if monday in grouped:
+            grouped[monday].extend(data[item])
+        else:
+            grouped[monday] = data[item]
+    return grouped
+
+
 def collect_items(pages_content):
     """collect post date ant title elements"""
     data = {}
@@ -100,8 +121,12 @@ def filter_words_on_morphy(words):
 
 
 def print_result(data):
-    for item in data:
-        print("{} {}".format(item, data[item]))
+    for key_date in data:
+        top_words = [word[0] for word in Counter(data[key_date]).most_common(3)]
+        delta = timedelta(days=6)
+        week_end = key_date + delta
+        template = "Неделя {:%d-%m-%Y} - {:%d-%m-%Y}; Популярные слова: {}"
+        print(template.format(key_date, week_end, ', '.join(top_words)))
 
 
 def main():
