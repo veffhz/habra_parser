@@ -1,0 +1,13 @@
+*.iml
+.idea/
+target/
+*.zip
+.logs/
+bin/
+obj/
+venv/
+.vs/
+*.pyc
+packages/
+test-output/
+
