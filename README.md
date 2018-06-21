@@ -13,7 +13,7 @@ pip3 install -r requirements.txt
 
 #### Запуск скрипта:
 ```
-python3 habr_parser.py --pages=20
+python3 habra_parser.py --pages=20
 ```
 
 #### Пример вывода скрипта:
